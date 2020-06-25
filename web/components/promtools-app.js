@@ -89,33 +89,20 @@ class App extends LitElement {
                 <div class="col-sm-4">
                     <section class="section">
         
-                        <h1 class="title">SLOs with Prometheus</h1>
+                        <h1 class="title">Sentinel</h1>
         
-                        <h2 class="subtitle">Multiple Burn Rate Alerts</h2>
+                        <h2 class="subtitle">Config Generator</h2>
         
                         <p>
-                            This page will generate, with the data you provide in the form, the necessary Prometheus alerting
-                            and recording rules for
-                            <a href="https://landing.google.com/sre/workbook/chapters/alerting-on-slos/#5-multiple-burn-rate-alerts">Multiple
-                                Burn Rate</a> which you might know from
-                            <a href="https://landing.google.com/sre/workbook/toc/">The Site Reliability Workbook</a>.
-                            These rules will evaluate based on the available metrics in the last <strong>30 days</strong>.
+                            This page will generate the necessary Prometheus alerting
+                            rules with the data you provide in the form.
                         </p>
                         <br>
                         <promtools-form ?loading="${this.loading}" @generate="${this.generate}"></promtools-form>
                         <hr>
                         <p>
-                            This project is based on the <a href="https://github.com/metalmatze/slo-libsonnet">SLO-libsonnet</a>
-                            project to generate the YAML with jsonnet.<br>
-                            The Web UI is built with 
-                            <a href="https://lit-element.polymer-project.org/">LitElement</a>
-                            and 
-                            <a href="https://golang.org">Go</a> 
-                            and the <a href="https://github.com/metalmatze/promtools.dev">source is on GitHub</a> too.
-                        </p>
-                        <p>
-                            Built by <a href="https://twitter.com/metalmatze">MetalMatze</a>.
-                            Feel free to reach out for feedback or questions.
+                            Based on <a href="https://github.com/metalmatze/slo-libsonnet">SLO-libsonnet</a>
+                            and <a href="https://github.com/metalmatze/promtools.dev">Promtools.dev</a>.
                         </p>
                     </section>
                 </div>

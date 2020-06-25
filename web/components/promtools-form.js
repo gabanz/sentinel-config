@@ -99,10 +99,10 @@ class Form extends LitElement {
         super();
         this.target = 99.9;
         this.metric = 'http_requests_total';
-        this.selectors = [{name: 'job', value: 'prometheus'}];
-        this.alertName = '';
-        this.alertMessage = '';
-        this.errorSelectors = '';
+        this.selectors = [{name: 'label', value: 'zone_name'}];
+        //this.alertName = '';
+        //this.alertMessage = '';
+        //this.errorSelectors = '';
 
         this.unavailabilityMinutes(this.target);
     }
@@ -115,7 +115,7 @@ class Form extends LitElement {
             <form @submit="${this.generate}">
                 <div class="field">
                     <label class="label" for="target">
-                        <h3>Availability Target (Unavailability in 30 days: ${this.unavailability})</h3>
+                        <h3>Availability SLO (Unavailability in 30 days: ${this.unavailability})</h3>
                         <div class="control">
                             <input class="input" type="number" step="0.001" min="0" max="100" id="target"
                                 placeholder="0-100"
@@ -132,6 +132,7 @@ class Form extends LitElement {
                         is generally calculated based on how long a service was unavailable over some period.
                     </p>
                 </div>
+<!--
                 <div class="field">
                     <label for="metric" class="label">
                         <h3>Metric</h3>
@@ -149,10 +150,10 @@ class Form extends LitElement {
                         It's best to base this on metrics coming from a LoadBalancer or Ingress.
                     </p>
                 </div>
-
+-->
                 <div class="field group">
                     <div style="flex: 1">
-                        <h3>Selectors</h3>
+                        <h3>Zone Name</h3>
                     </div>
                     <div>
                         <ui-button @click="${this.addSelector}">+</ui-button>
@@ -188,7 +189,7 @@ class Form extends LitElement {
                         </label>
                     </div>
                 `)}
-
+<!--
                 <div class="field">
                     <h3 @click="${() => this.advanced = !this.advanced}" class="advanced">
                         ${this.advanced ? chevronDown : chevronRight}
@@ -228,7 +229,7 @@ class Form extends LitElement {
                         </label>
                     </div>
                 </div>
-
+-->
                 <div class="field">
                     <label class="label">
                         <div class="control">
@@ -246,7 +247,7 @@ class Form extends LitElement {
         this.target = target;
 
         if (target === 100.0) {
-            this.unavailability = "HAHAHAHAHA, THAT'S FUNNY!";
+            this.unavailability = "definitely not 100%";
             return;
         }
 

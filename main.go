@@ -57,7 +57,7 @@ func file(filename string) HandlerFunc {
 }
 
 var errorBurnRate = `
-local slo = import 'github.com/metalmatze/slo-libsonnet/slo-libsonnet/slo.libsonnet';
+local slo = import 'github.com/gabanz/slo-libsonnet/slo-libsonnet/slo.libsonnet';
 local params = %s;
 
 {
