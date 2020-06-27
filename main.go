@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"strings"
+	//"strings"
 
 	"github.com/ghodss/yaml"
 	"github.com/go-chi/chi"
@@ -77,7 +77,7 @@ local params = %s;
 type request struct {
 	Availability   float64           `json:"availability" validate:"required,gte=0,lte=100"`
 	Metric         string            `json:"metric" validate:"required,metric"`
-	Selectors      map[string]string `json:"selectors"`
+	Zones      map[string]string `json:"zones"`
 	ErrorSelectors string            `json:"errorSelectors"`
 	AlertName      string            `json:"alertName" validate:"omitempty,alphanum"`
 	AlertMessage   string            `json:"alertMessage" validate:"omitempty,alphanumunicode"`
@@ -86,7 +86,7 @@ type request struct {
 type params struct {
 	Target         float64  `json:"target"`
 	Metric         string   `json:"metric"`
-	Selectors      []string `json:"selectors"`
+	Zones      []string `json:"zones"`
 	ErrorSelectors []string `json:"errorSelectors,omitempty"`
 	AlertName      string   `json:"alertName,omitempty"`
 	AlertMessage   string   `json:"alertMessage,omitempty"`
@@ -101,21 +101,20 @@ func generate(vm *jsonnet.VM) HandlerFunc {
 		panic("failed to register metric validator")
 	}
 
+	/*
 	validate.RegisterStructValidation(func(sl validator.StructLevel) {
-		labelNameExp := regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*$`)
+		labelNameExp := regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9._-]*$`)
 
 		req := sl.Current().Interface().(request)
 
-		for name, value := range req.Selectors {
+		for name := range req.Zones {
 			if !labelNameExp.MatchString(name) {
-				sl.ReportError(req.Selectors, "selector.name", "Selector Name", "label", "")
+				sl.ReportError(req.Zones, "zone.name", "Zone Name", "label", "")
 
-			}
-			if !labelNameExp.MatchString(value) {
-				sl.ReportError(req.Selectors, "selector.value", "Selector value", "label", "")
 			}
 		}
 	}, request{})
+	*/
 
 	return func(w http.ResponseWriter, r *http.Request) (int, error) {
 		var req request
@@ -135,8 +134,18 @@ func generate(vm *jsonnet.VM) HandlerFunc {
 			AlertMessage: req.AlertMessage,
 		}
 
-		for name, value := range req.Selectors {
-			p.Selectors = append(p.Selectors, fmt.Sprintf(`%s="%s"`, name, strings.Replace(value, `"`, `\"`, -1)))
+		//for name, value := range req.Zones {
+		//	p.Zones = append(p.Zones, fmt.Sprintf(`%s="%s"`, name, strings.Replace(value, `"`, `\"`, -1)))
+		//}
+
+		/*
+		for name, value := range req.Zones {
+			p.Zones = append(p.Zones, fmt.Sprintf(`%s=%s`, name, value))
+		}
+		*/
+
+		for _, zone := range req.Zones {
+			p.Zones = append(p.Zones, fmt.Sprintf(`%s`, zone))
 		}
 
 		bytes, err := json.Marshal(p)

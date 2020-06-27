@@ -7,7 +7,7 @@ class Form extends LitElement {
             target: {type: Number},
             unavailability: {type: String},
             metric: {type: String},
-            selectors: {type: Array},
+            zones: {type: Array},
             alertName: {type: String},
             alertMessage: {type: String},
             errorSelectors: {type: String},
@@ -99,7 +99,7 @@ class Form extends LitElement {
         super();
         this.target = 99.9;
         this.metric = 'http_requests_total';
-        this.selectors = [{name: 'label', value: 'zone_name'}];
+        this.zones = [{name: 'example.com'}];
         //this.alertName = '';
         //this.alertMessage = '';
         //this.errorSelectors = '';
@@ -153,83 +153,32 @@ class Form extends LitElement {
 -->
                 <div class="field group">
                     <div style="flex: 1">
-                        <h3>Zone Name</h3>
+                        <h3>Add Zones</h3>
                     </div>
                     <div>
-                        <ui-button @click="${this.addSelector}">+</ui-button>
+                        <ui-button @click="${this.addZone}">+</ui-button>
                     </div>
                 </div>
 
-                ${this.selectors.map((selector, i) => html`
+                ${this.zones.map((zone, i) => html`
                     <div class="field group">
-                        <label class="label">Name
+                        <label class="label">Zone Name
                             <div class="control">
                                 <input type="text" class="input"
-                                    .value="${selector.name}"
+                                    .value="${zone.name}"
                                     ?disabled="${this.loading}"
-                                    @change="${(event) => this.updateSelector('name', i, event.target.value)}"
-                                    @keyup="${(event) => this.updateSelector('name', i, event.target.value)}"
-                                />
-                            </div>
-                        </label>
-                        <label class="label">Value
-                            <div class="control">
-                                <input type="text" class="input"
-                                    .value="${selector.value}"
-                                    ?disabled="${this.loading}"
-                                    @change="${(event) => this.updateSelector('value', i, event.target.value)}"
-                                    @keyup="${(event) => this.updateSelector('value', i, event.target.value)}"
+                                    @change="${(event) => this.updateZone('name', i, event.target.value)}"
+                                    @keyup="${(event) => this.updateZone('name', i, event.target.value)}"
                                 />
                             </div>
                         </label>
                         <label class="label" style="flex: 1">&nbsp;
                             <div class="control">
-                                <ui-button @click="${() => this.deleteSelector(i)}">–</ui-button>
+                                <ui-button @click="${() => this.deleteZone(i)}">–</ui-button>
                             </div>
                         </label>
                     </div>
                 `)}
-<!--
-                <div class="field">
-                    <h3 @click="${() => this.advanced = !this.advanced}" class="advanced">
-                        ${this.advanced ? chevronDown : chevronRight}
-                        Advanced
-                    </h3>
-
-                    <div class="${this.advanced ? '' : 'advanced-hide'}">
-                        <label class="label">Alert Name
-                            <div class="control">
-                                <input class="input" type="text"
-                                    .value="${this.alertName}"
-                                    ?disabled="${this.loading}"
-                                    @change="${(event) => this.alertName = event.target.value}"
-                                    @keyup="${(event) => this.alertName = event.target.value}"
-                                />
-                            </div>
-                        </label>
-                       <label class="label">Alert Message
-                            <div class="control">
-                                <input class="input" type="text"
-                                    .value="${this.alertMessage}"
-                                    ?disabled="${this.loading}"
-                                    @change="${(event) => this.alertMessage = event.target.value}"
-                                    @keyup="${(event) => this.alertMessage = event.target.value}"
-                                />
-                            </div>
-                        </label>
-                       <label class="label">Error Selector
-                            <div class="control">
-                                <input class="input" type="text" placeholder="${'code=~"5.."'}"
-                                    .value="${this.errorSelectors}"
-                                    ?disabled="${this.loading}"
-                                    @change="${(event) => this.errorSelectors = event.target.value}"
-                                    @keyup="${(event) => this.errorSelectors = event.target.value}"
-                                />
-                            </div>
-                        </label>
-                    </div>
-                </div>
--->
                 <div class="field">
                     <label class="label">
                         <div class="control">
@@ -274,17 +223,17 @@ class Form extends LitElement {
 
     generate(event) {
         event.preventDefault();
-
         console.log("generate");
 
-        let selectors = {};
-        this.selectors.forEach((s) => selectors[s.name] = s.value);
-
+        let zones = {};
+        this.zones.forEach((zone, i) => zones[i] = zone.name);
+        console.log(zones);
         let detail = {
             metric: this.metric,
             availability: this.target,
-            selectors: selectors,
+            zones: zones,
         };
+        console.log(detail);
 
         if (this.alertName !== '') {
             detail.alertName = this.alertName;
@@ -301,29 +250,26 @@ class Form extends LitElement {
         }));
     }
 
-    addSelector() {
+    addZone() {
         // Create new array with old array and new selector object
-        this.selectors = [...this.selectors, {name: '', value: ''}];
+        this.zones = [...this.zones, {name: 'example.com'}];
     }
 
-    deleteSelector(index) {
-        if (this.selectors.length === 1) {
+    deleteZone(index) {
+        if (this.zones.length === 1) {
             return;
         }
 
         // Delete at the index and create a new (immutable) array
-        this.selectors = [
-            ...this.selectors.slice(0, index),
-            ...this.selectors.slice(index + 1)
+        this.zones = [
+            ...this.zones.slice(0, index),
+            ...this.zones.slice(index + 1)
         ]
     }
 
-    updateSelector(field, i, value) {
+    updateZone(field, i, value) {
         if (field === 'name') {
-            this.selectors[i].name = value;
-        }
-        if (field === 'value') {
-            this.selectors[i].value = value;
+            this.zones[i].name = value;
         }
     }
 }
