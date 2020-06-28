@@ -3,6 +3,20 @@ Web GUI to Generate SLO Alerts Configuration for Sentinel
 
 ## Getting started
 
+Run the application from a docker container:
+
+```
+docker run -d -p 80:9099 --name sentinel-config gabanz/sentinel-config
+```
+
+Access the application from a browser:
+
+```
+http://localhost
+```
+
+## Compile from source code
+
 Install jsonnet. For Mac OSX, use homebrew:
 
 ```
@@ -39,7 +53,7 @@ Access the GUI:
 http://localhost:9099
 ```
 
-## Run in a Docker container
+## Building for Linux and Docker image
 
 Build the package for Linux OS:
 

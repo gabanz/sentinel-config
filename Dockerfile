@@ -1,7 +1,9 @@
 FROM alpine
 
 ADD ./sentinel-config /app/
-ADD ./web/* /app/web/
+ADD ./web/index.html /app/web/
+ADD ./web/index.css /app/web/
+ADD ./web/components/* /app/web/components/
 ADD ./error-burn.libsonnet /app/
 
 VOLUME /app
