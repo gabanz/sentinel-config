@@ -14,7 +14,7 @@
     {
       "source": {
         "git": {
-          "remote": "https://github.com/metalmatze/slo-libsonnet.git",
+          "remote": "https://github.com/gabanz/slo-libsonnet.git",
           "subdir": "slo-libsonnet"
         }
       },

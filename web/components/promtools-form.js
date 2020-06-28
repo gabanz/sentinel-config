@@ -6,14 +6,8 @@ class Form extends LitElement {
         return {
             target: {type: Number},
             unavailability: {type: String},
-            metric: {type: String},
             zones: {type: Array},
-            alertName: {type: String},
-            alertMessage: {type: String},
-            errorSelectors: {type: String},
-
             loading: {type: Boolean},
-            advanced: {type: Boolean, attribute: false},
         };
     }
 
@@ -89,27 +83,18 @@ class Form extends LitElement {
                 outline: 0;
                 border-color: var(--primary-color);
             }
-            .advanced-hide {
-                display: none;
-            }
         `;
     }
 
     constructor() {
         super();
         this.target = 99.9;
-        this.metric = 'http_requests_total';
         this.zones = [{name: 'example.com'}];
-        //this.alertName = '';
-        //this.alertMessage = '';
-        //this.errorSelectors = '';
 
         this.unavailabilityMinutes(this.target);
     }
 
     render() {
-        const chevronRight = svg`<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" class="svg-inline--fa fa-chevron-right fa-w-10" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"></path></svg>`;
-        const chevronDown = svg`<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" class="svg-inline--fa fa-chevron-down fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg>`;
 
         return html`
             <form @submit="${this.generate}">
@@ -132,25 +117,6 @@ class Form extends LitElement {
                         is generally calculated based on how long a service was unavailable over some period.
                     </p>
                 </div>
-<!--
-                <div class="field">
-                    <label for="metric" class="label">
-                        <h3>Metric</h3>
-                        <div class="control">
-                            <input class="input" type="text" placeholder="http_requests_total" id="metric"
-                                autofocus
-                                .value="${this.metric}"
-                                @change="${(event) => this.metric = event.target.value}"
-                                ?disabled=${this.loading}
-                            />
-                        </div>
-                    </label>
-                    <p class="help">
-                        The metric name to base the SLO on.<br>
-                        It's best to base this on metrics coming from a LoadBalancer or Ingress.
-                    </p>
-                </div>
--->
                 <div class="field group">
                     <div style="flex: 1">
                         <h3>Add Zones</h3>
@@ -227,23 +193,10 @@ class Form extends LitElement {
 
         let zones = {};
         this.zones.forEach((zone, i) => zones[i] = zone.name);
-        console.log(zones);
         let detail = {
-            metric: this.metric,
             availability: this.target,
             zones: zones,
         };
-        console.log(detail);
-
-        if (this.alertName !== '') {
-            detail.alertName = this.alertName;
-        }
-        if (this.alertMessage !== '') {
-            detail.alertMessage = this.alertMessage;
-        }
-        if (this.errorSelectors !== '') {
-            detail.errorSelectors = this.errorSelectors;
-        }
 
         this.dispatchEvent(new CustomEvent('generate', {
             detail: detail,

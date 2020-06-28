@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"regexp"
-	//"strings"
 
 	"github.com/ghodss/yaml"
 	"github.com/go-chi/chi"
@@ -62,44 +60,23 @@ local params = %s;
 
 {
   local errorburnrate = slo.errorburn(params),
-
-  groups: [
-    {
-      name: 'SLOs-%%s' %% params.metric,
-      rules:
-        errorburnrate.alerts +
-        errorburnrate.recordingrules,
-    },
-  ],
+  groups: [errorburnrate.alerts],
 }
 `
 
 type request struct {
 	Availability   float64           `json:"availability" validate:"required,gte=0,lte=100"`
-	Metric         string            `json:"metric" validate:"required,metric"`
 	Zones      map[string]string `json:"zones"`
-	ErrorSelectors string            `json:"errorSelectors"`
-	AlertName      string            `json:"alertName" validate:"omitempty,alphanum"`
-	AlertMessage   string            `json:"alertMessage" validate:"omitempty,alphanumunicode"`
 }
 
 type params struct {
 	Target         float64  `json:"target"`
-	Metric         string   `json:"metric"`
+	Availability    string `json:"availability"`
 	Zones      []string `json:"zones"`
-	ErrorSelectors []string `json:"errorSelectors,omitempty"`
-	AlertName      string   `json:"alertName,omitempty"`
-	AlertMessage   string   `json:"alertMessage,omitempty"`
 }
 
 func generate(vm *jsonnet.VM) HandlerFunc {
 	validate := validator.New()
-	if err := validate.RegisterValidation("metric", func(fl validator.FieldLevel) bool {
-		metricNameExp := regexp.MustCompile(`^[a-zA-Z_:][a-zA-Z0-9_:]*$`)
-		return metricNameExp.MatchString(fl.Field().String())
-	}); err != nil {
-		panic("failed to register metric validator")
-	}
 
 	/*
 	validate.RegisterStructValidation(func(sl validator.StructLevel) {
@@ -129,20 +106,8 @@ func generate(vm *jsonnet.VM) HandlerFunc {
 
 		p := params{
 			Target:       req.Availability / 100,
-			Metric:       req.Metric,
-			AlertName:    req.AlertName,
-			AlertMessage: req.AlertMessage,
+			Availability:    fmt.Sprint(req.Availability),
 		}
-
-		//for name, value := range req.Zones {
-		//	p.Zones = append(p.Zones, fmt.Sprintf(`%s="%s"`, name, strings.Replace(value, `"`, `\"`, -1)))
-		//}
-
-		/*
-		for name, value := range req.Zones {
-			p.Zones = append(p.Zones, fmt.Sprintf(`%s=%s`, name, value))
-		}
-		*/
 
 		for _, zone := range req.Zones {
 			p.Zones = append(p.Zones, fmt.Sprintf(`%s`, zone))
