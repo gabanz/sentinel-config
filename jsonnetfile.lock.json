@@ -4,16 +4,6 @@
     {
       "source": {
         "git": {
-          "remote": "https://github.com/gabanz/slo-libsonnet.git",
-          "subdir": "slo-libsonnet"
-        }
-      },
-      "version": "bc706b1b65b27cd107b8e34ce4c7697886027e9a",
-      "sum": "RL+XYynsq4UfKL1uCdMqYpyoXeJtKQLxapu/hZbzhGY="
-    },
-    {
-      "source": {
-        "git": {
           "remote": "https://github.com/ksonnet/ksonnet-lib.git",
           "subdir": ""
         }

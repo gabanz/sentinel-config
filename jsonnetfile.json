@@ -10,15 +10,6 @@
       },
       "version": "master",
       "name": "ksonnet"
-    },
-    {
-      "source": {
-        "git": {
-          "remote": "https://github.com/gabanz/slo-libsonnet.git",
-          "subdir": "slo-libsonnet"
-        }
-      },
-      "version": "master"
     }
   ],
   "legacyImports": false
