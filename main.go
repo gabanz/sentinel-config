@@ -60,7 +60,7 @@ local params = %s;
 
 {
   local errorburnrate = slo.errorburn(params),
-  groups: [errorburnrate.alerts],
+  rules: errorburnrate.alerts,
 }
 `
 

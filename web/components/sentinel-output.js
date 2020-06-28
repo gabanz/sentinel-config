@@ -28,4 +28,4 @@ class Output extends LitElement {
     }
 }
 
-customElements.define('promtools-output', Output);
+customElements.define('sentinel-output', Output);

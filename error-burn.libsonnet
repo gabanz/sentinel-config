@@ -15,26 +15,17 @@
     ],
 
     local window = [
-        { percent: '2', long: '1h', short: '5m', factor: 14.4 },
-        { percent: '5', long: '6h', short: '30m', factor: 6 },
-        { percent: '10', long: '1d', short: '2h', factor: 3 },
-        { percent: '10', long: '3d', short: '6h', factor: 1 },
+        { percent: '2', long: '1h', short: '5m', factor: 14.4, label: { priority: '1', notify: 'chat-sentinel-poc' } },
+        { percent: '5', long: '6h', short: '30m', factor: 6, label: { priority: '2' } },
+        { percent: '10', long: '1d', short: '2h', factor: 3, label: { priority: '3' } },
+        { percent: '10', long: '3d', short: '6h', factor: 1, label: { priority: '4' } },
     ],
-
-    local labels = {
-      name: [
-        { priority: '1', notify: 'chat-sentinel-poc' },
-        { priority: '2', notify: '' },
-        { priority: '3', notify: '' },
-        { priority: '4', notify: '' },
-      ],
-    },
 
     alerts:
       [
         {
           alert: 'sentinel_%s_eb_%spercent_%s_slo%s' % [k.name, w.percent, w.long, param.availability],
-          labels: 'not yet',
+          labels: w.label,
           annotations: {
             summary: '%s error budget burning fast for {{ $labels.zone_name }} in the last %s' % [k.name, w.long],
           },

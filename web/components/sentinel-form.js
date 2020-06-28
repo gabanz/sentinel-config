@@ -100,8 +100,9 @@ class Form extends LitElement {
             <form @submit="${this.generate}">
                 <div class="field">
                     <label class="label" for="target">
-                        <h3>Availability SLO (Unavailability in 30 days: ${this.unavailability})</h3>
+                        <h3>Availability SLO</h3>
                         <div class="control">
+                        Unavailability in 30 days: ${this.unavailability}
                             <input class="input" type="number" step="0.001" min="0" max="100" id="target"
                                 placeholder="0-100"
                                 autofocus
@@ -117,6 +118,7 @@ class Form extends LitElement {
                         is generally calculated based on how long a service was unavailable over some period.
                     </p>
                 </div>
+                <br/>
                 <div class="field group">
                     <div style="flex: 1">
                         <h3>Add Zones</h3>
@@ -227,4 +229,4 @@ class Form extends LitElement {
     }
 }
 
-customElements.define('promtools-form', Form);
+customElements.define('sentinel-form', Form);

@@ -1,6 +1,6 @@
 import {css, html, LitElement} from 'https://unpkg.com/lit-element@2.3.1/lit-element.js?module';
-import './promtools-form.js';
-import './promtools-output.js';
+import './sentinel-form.js';
+import './sentinel-output.js';
 
 class App extends LitElement {
     static get properties() {
@@ -98,7 +98,7 @@ class App extends LitElement {
                             rules with the data you provide in the form.
                         </p>
                         <br>
-                        <promtools-form ?loading="${this.loading}" @generate="${this.generate}"></promtools-form>
+                        <sentinel-form ?loading="${this.loading}" @generate="${this.generate}"></sentinel-form>
                         <hr>
                         <p>
                             Based on <a href="https://github.com/metalmatze/slo-libsonnet">SLO-libsonnet</a>
@@ -108,7 +108,7 @@ class App extends LitElement {
                 </div>
                 <div class="col-sm-8">
                     <section class="section">
-                        <promtools-output .output="${this.output}"></promtools-output>
+                        <sentinel-output .output="${this.output}"></sentinel-output>
                     </section>
                 </div>
             </div>`;
@@ -132,4 +132,4 @@ class App extends LitElement {
     }
 }
 
-customElements.define('promtools-app', App);
+customElements.define('sentinel-app', App);

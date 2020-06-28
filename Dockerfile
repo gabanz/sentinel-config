@@ -1,11 +1,12 @@
 FROM alpine
 
-RUN mkdir -p /app/vendor/github.com/metalmatze/slo-libsonnet/
-RUN mkdir -p /app/web/
+ADD ./sentinel-config /app/
+ADD ./web/* /app/web/
+ADD ./error-burn.libsonnet /app/
 
-COPY ./promtools.dev /app
-COPY ./web /app/web
-COPY ./vendor/github.com/metalmatze/slo-libsonnet/slo-libsonnet /app/vendor/github.com/metalmatze/slo-libsonnet/slo-libsonnet
-
+VOLUME /app
 WORKDIR /app
-ENTRYPOINT ["/app/promtools.dev"]
+
+EXPOSE 9099
+
+CMD ["/app/sentinel-config"]  

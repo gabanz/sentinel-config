@@ -1,4 +1,4 @@
-module github.com/metalmatze/promtools.dev
+module github.com/gabanz/sentinel-config
 
 go 1.13
 
