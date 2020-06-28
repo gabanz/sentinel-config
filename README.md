@@ -38,3 +38,29 @@ Access the GUI:
 ```
 http://localhost:9099
 ```
+
+## Run in a Docker container
+
+Build the package for Linux OS:
+
+```
+make linux386
+```
+
+Build the docker image:
+
+```
+docker build -t "sentinel-config:Dockerfile" .
+```
+
+Create the docker container:
+
+```
+docker run -d -v ${PWD}:/app -p 9099:9099 --name sentinel-config sentinel-config:Dockerfile
+```
+
+Access the application via the exposed port:
+
+```
+http://localhost:9099
+```
