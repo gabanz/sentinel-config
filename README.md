@@ -61,6 +61,12 @@ Build the package for Linux OS:
 make linux386
 ```
 
+Build the package for Raspberry Pi:
+
+```
+make raspberrypi
+```
+
 Build the docker image:
 
 ```
