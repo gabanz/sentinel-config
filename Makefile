@@ -9,3 +9,6 @@ sentinel-config: $(shell find . -name '*.go')
 
 linux386: $(shell find . -name '*.go')
 	CGO_ENABLED=0 env GOOS=linux GOARCH=386 go build -v -ldflags '-w -extldflags '-static''
+
+raspberrypi: $(shell find . -name '*.go')
+	CGO_ENABLED=0 env GOOS=linux GOARCH=arm GOARM=7 go build -v -ldflags '-w -extldflags '-static''
