@@ -7,6 +7,9 @@ class Form extends LitElement {
             target: {type: Number},
             unavailability: {type: String},
             zones: {type: Array},
+            originrtt: {type: Number},
+            ttfb: {type: Number},
+            threshold: {type: Number},
             loading: {type: Boolean},
         };
     }
@@ -90,8 +93,10 @@ class Form extends LitElement {
         super();
         this.target = 99.9;
         this.zones = [{name: 'example.com'}];
-
         this.unavailabilityMinutes(this.target);
+        this.originrtt = 100;
+        this.ttfb = 100;
+        this.threshold = 1.1;
     }
 
     render() {
@@ -103,7 +108,7 @@ class Form extends LitElement {
                         <h3>Availability SLO</h3>
                         <div class="control">
                         Unavailability in 30 days: ${this.unavailability}
-                            <input class="input" type="number" step="0.001" min="0" max="100" id="target"
+                            <input class="input" type="number" step="0.01" min="0" max="100" id="target"
                                 placeholder="0-100"
                                 autofocus
                                 .value="${this.target}"
@@ -148,6 +153,48 @@ class Form extends LitElement {
                     </div>
                 `)}
                 <div class="field">
+                <label class="label" for="originrtt">
+                    <h3>Origin RTT (in ms)</h3>
+                    <div class="control">
+                        <input class="input" type="number" min="0" id="originrtt"
+                            placeholder="100"
+                            autofocus
+                            .value="${this.originrtt}"
+                            @change="${(event) => this.originrtt = parseInt(event.target.value)}"
+                            ?disabled=${this.loading}
+                        />
+                     </div>
+                 </label>
+                 </div>
+                 <div class="field">
+                 <label class="label" for="ttfb">
+                 <h3>TTFB (in ms)</h3>
+                 <div class="control">
+                     <input class="input" type="number" min="0" id="ttfb"
+                         placeholder="100"
+                         autofocus
+                         .value="${this.ttfb}"
+                         @change="${(event) => this.ttfb = parseInt(event.target.value)}"
+                         ?disabled=${this.loading}
+                     />
+                 </div>
+                 </label>
+                 </div>
+                 <div class="field">
+                   <label class="label" for="threshold">
+                     <h3>Threshold</h3>
+                     <div class="control">
+                         <input class="input" type="number" min="0" step="0.1" id="threshold"
+                             placeholder="1.1"
+                             autofocus
+                             .value="${this.threshold}"
+                             @change="${(event) => this.threshold = parseFloat(event.target.value)}"
+                             ?disabled=${this.loading}
+                         />
+                     </div>
+                   </label>
+                 </div>
+                <div class="field">
                     <label class="label">
                         <div class="control">
                             <ui-button type="submit" primary ?disabled="${this.loading}" @click="${this.generate}">
@@ -191,13 +238,15 @@ class Form extends LitElement {
 
     generate(event) {
         event.preventDefault();
-        console.log("generate");
 
         let zones = {};
         this.zones.forEach((zone, i) => zones[i] = zone.name);
         let detail = {
             availability: this.target,
             zones: zones,
+            originrtt: this.originrtt,
+            ttfb: this.ttfb,
+            threshold: this.threshold,
         };
 
         this.dispatchEvent(new CustomEvent('generate', {

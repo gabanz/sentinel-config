@@ -54,25 +54,35 @@ func file(filename string) HandlerFunc {
 	}
 }
 
-var errorBurnRate = `
-local slo = import 'error-burn.libsonnet';
+var alerts = `
+local slo = import 'sentinel.libsonnet';
 local params = %s;
 
 {
-  local errorburnrate = slo.errorburn(params),
-  rules: errorburnrate.alerts,
+  local alerts = slo.alerts(params),
+  rules: alerts.errorburn +
+  alerts.latency_originrtt +
+  alerts.latency_ttfb +
+  alerts.attack +
+  alerts.traffic,
 }
 `
 
 type request struct {
 	Availability   float64           `json:"availability" validate:"required,gte=0,lte=100"`
 	Zones      map[string]string `json:"zones"`
+	OriginRtt      int            `json:"originrtt" validate:"required,gte=0"`
+	Ttfb      int            `json:"ttfb" validate:"required,gte=0"`
+	Threshold      float64            `json:"threshold" validate:"required,gte=0"`
 }
 
 type params struct {
 	Target         float64  `json:"target"`
 	Availability    string `json:"availability"`
 	Zones      []string `json:"zones"`
+	OriginRtt      int            `json:"originrtt"`
+	Ttfb      int            `json:"ttfb"`
+	Threshold      float64            `json:"threshold"`
 }
 
 func generate(vm *jsonnet.VM) HandlerFunc {
@@ -107,6 +117,9 @@ func generate(vm *jsonnet.VM) HandlerFunc {
 		p := params{
 			Target:       req.Availability / 100,
 			Availability:    fmt.Sprint(req.Availability),
+			OriginRtt:       req.OriginRtt,
+			Ttfb:    req.Ttfb,
+			Threshold:       req.Threshold,
 		}
 
 		for _, zone := range req.Zones {
@@ -118,7 +131,7 @@ func generate(vm *jsonnet.VM) HandlerFunc {
 			return http.StatusInternalServerError, fmt.Errorf("failed to marshal request: %w", err)
 		}
 
-		snippet := fmt.Sprintf(errorBurnRate, string(bytes))
+		snippet := fmt.Sprintf(alerts, string(bytes))
 		json, err := vm.EvaluateSnippet("", snippet)
 		if err != nil {
 			return http.StatusInternalServerError, err
