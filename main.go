@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"regexp"
 
 	"github.com/ghodss/yaml"
 	"github.com/go-chi/chi"
@@ -70,7 +71,7 @@ local params = %s;
 
 type request struct {
 	Availability   float64           `json:"availability" validate:"required,gte=0,lte=100"`
-	Zones      map[string]string `json:"zones"`
+	Zone      string `json:"zone" validate:"required,zone"`
 	OriginRtt      int            `json:"originrtt" validate:"required,gte=0"`
 	Ttfb      int            `json:"ttfb" validate:"required,gte=0"`
 	Threshold      float64            `json:"threshold" validate:"required,gte=0"`
@@ -79,7 +80,7 @@ type request struct {
 type params struct {
 	Target         float64  `json:"target"`
 	Availability    string `json:"availability"`
-	Zones      []string `json:"zones"`
+	Zone      string `json:"zone"`
 	OriginRtt      int            `json:"originrtt"`
 	Ttfb      int            `json:"ttfb"`
 	Threshold      float64            `json:"threshold"`
@@ -87,21 +88,12 @@ type params struct {
 
 func generate(vm *jsonnet.VM) HandlerFunc {
 	validate := validator.New()
-
-	/*
-	validate.RegisterStructValidation(func(sl validator.StructLevel) {
-		labelNameExp := regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9._-]*$`)
-
-		req := sl.Current().Interface().(request)
-
-		for name := range req.Zones {
-			if !labelNameExp.MatchString(name) {
-				sl.ReportError(req.Zones, "zone.name", "Zone Name", "label", "")
-
-			}
-		}
-	}, request{})
-	*/
+	if err := validate.RegisterValidation("zone", func(fl validator.FieldLevel) bool {
+		metricNameExp := regexp.MustCompile(`^(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$`)
+		return metricNameExp.MatchString(fl.Field().String())
+	}); err != nil {
+		panic("failed to register metric validator")
+	}
 
 	return func(w http.ResponseWriter, r *http.Request) (int, error) {
 		var req request
@@ -117,13 +109,10 @@ func generate(vm *jsonnet.VM) HandlerFunc {
 		p := params{
 			Target:       req.Availability / 100,
 			Availability:    fmt.Sprint(req.Availability),
+			Zone:    req.Zone,
 			OriginRtt:       req.OriginRtt,
 			Ttfb:    req.Ttfb,
 			Threshold:       req.Threshold,
-		}
-
-		for _, zone := range req.Zones {
-			p.Zones = append(p.Zones, fmt.Sprintf(`%s`, zone))
 		}
 
 		bytes, err := json.Marshal(p)

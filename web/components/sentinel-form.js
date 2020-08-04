@@ -6,7 +6,7 @@ class Form extends LitElement {
         return {
             target: {type: Number},
             unavailability: {type: String},
-            zones: {type: Array},
+            zone: {type: String},
             originrtt: {type: Number},
             ttfb: {type: Number},
             threshold: {type: Number},
@@ -92,7 +92,7 @@ class Form extends LitElement {
     constructor() {
         super();
         this.target = 99.9;
-        this.zones = [{name: 'example.com'}];
+        this.zone = 'example.com';
         this.unavailabilityMinutes(this.target);
         this.originrtt = 100;
         this.ttfb = 100;
@@ -123,35 +123,19 @@ class Form extends LitElement {
                         is generally calculated based on how long a service was unavailable over some period.
                     </p>
                 </div>
-                <br/>
-                <div class="field group">
-                    <div style="flex: 1">
-                        <h3>Add Zones</h3>
-                    </div>
-                    <div>
-                        <ui-button @click="${this.addZone}">+</ui-button>
-                    </div>
+                <div class="field">
+                    <label for="zone" class="label">
+                        <h3>Zone Name</h3>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="example.com" id="zone"
+                                autofocus
+                                .value="${this.zone}"
+                                @change="${(event) => this.zone = event.target.value}"
+                                ?disabled=${this.loading}
+                            />
+                        </div>
+                    </label>
                 </div>
-
-                ${this.zones.map((zone, i) => html`
-                    <div class="field group">
-                        <label class="label">Zone Name
-                            <div class="control">
-                                <input type="text" class="input"
-                                    .value="${zone.name}"
-                                    ?disabled="${this.loading}"
-                                    @change="${(event) => this.updateZone('name', i, event.target.value)}"
-                                    @keyup="${(event) => this.updateZone('name', i, event.target.value)}"
-                                />
-                            </div>
-                        </label>
-                        <label class="label" style="flex: 1">&nbsp;
-                            <div class="control">
-                                <ui-button @click="${() => this.deleteZone(i)}">–</ui-button>
-                            </div>
-                        </label>
-                    </div>
-                `)}
                 <div class="field">
                 <label class="label" for="originrtt">
                     <h3>Origin RTT (in ms)</h3>
@@ -238,43 +222,20 @@ class Form extends LitElement {
 
     generate(event) {
         event.preventDefault();
+        console.log('generate');
 
-        let zones = {};
-        this.zones.forEach((zone, i) => zones[i] = zone.name);
         let detail = {
             availability: this.target,
-            zones: zones,
+            zone: this.zone,
             originrtt: this.originrtt,
             ttfb: this.ttfb,
             threshold: this.threshold,
         };
+        console.log(detail);
 
         this.dispatchEvent(new CustomEvent('generate', {
             detail: detail,
         }));
-    }
-
-    addZone() {
-        // Create new array with old array and new selector object
-        this.zones = [...this.zones, {name: 'example.com'}];
-    }
-
-    deleteZone(index) {
-        if (this.zones.length === 1) {
-            return;
-        }
-
-        // Delete at the index and create a new (immutable) array
-        this.zones = [
-            ...this.zones.slice(0, index),
-            ...this.zones.slice(index + 1)
-        ]
-    }
-
-    updateZone(field, i, value) {
-        if (field === 'name') {
-            this.zones[i].name = value;
-        }
     }
 }
 
