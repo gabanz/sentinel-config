@@ -94,7 +94,7 @@
             summary: ' Drop in Traffic for {{ $labels.zone_name }}',
         },
         expr: |||
-          (avg_over_time(sql_sentinel_l7ddos_1m{zone_name="%(zone)s",col="requests"}[3m]) / (sql_sentinel_l7ddos_1m{zone_name="%(zone)s",col="requests"})) > %(threshold)s
+          (avg_over_time(sql_sentinel_l7ddos_1m{zone_name="%(zone)s",col="requests"}[3m]) / (sql_sentinel_l7ddos_1m{zone_name="%(zone)s",col="requests"})) > %(threshold).2f
         ||| % {
           threshold: slo.threshold,
           zone: slo.zone,
