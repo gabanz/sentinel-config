@@ -14,7 +14,7 @@
     ],
 
     local window = [
-        { percent: '2', long: '1h', short: '5m', factor: 14.4, label: { priority: '1', notify: 'chat-sentinel-poc' } },
+        { percent: '2', long: '1h', short: '5m', factor: 14.4, label: { priority: '1', notify: 'chat-sentinel-poc escalate-sentinel-production' } },
         { percent: '5', long: '6h', short: '30m', factor: 6, label: { priority: '2' } },
         { percent: '10', long: '24h', short: '2h', factor: 3, label: { priority: '3' } },
         { percent: '10', long: '3d', short: '6h', factor: 1, label: { priority: '4' } },
