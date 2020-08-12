@@ -114,8 +114,8 @@
             (
             sum by (zone_name) (sum_over_time(sql_sentinel_%(kind)sstatus_1m{code=~"5..",zone_name=~"%(zone)s"}[%(long)s])/  ignoring(code) group_left() sum_over_time(sql_sentinel_l7ddos_1m{col="requests",zone_name=~"%(zone)s"}[%(long)s])) > (%(factor).2f * %(subtract).5f)
             and
-            sum by (zone_name) (sum_over_time(sql_sentinel_%(kind)sstatus_1m{code=~"5..",zone_name=~"%(zone)s"}[%(short)s])/  ignoring(code) group_left() sum_over_time(sql_sentinel_l7ddos_1m{col="requests",zone_name=~"%(zone)s"}[%(short)s])) > (%(factor).2f * %(subtract).5f))
-            (
+            sum by (zone_name) (sum_over_time(sql_sentinel_%(kind)sstatus_1m{code=~"5..",zone_name=~"%(zone)s"}[%(short)s])/  ignoring(code) group_left() sum_over_time(sql_sentinel_l7ddos_1m{col="requests",zone_name=~"%(zone)s"}[%(short)s])) > (%(factor).2f * %(subtract).5f)
+            )
           ||| % {
             kind: k.name,
             percent: w.percent,
