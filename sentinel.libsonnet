@@ -82,26 +82,6 @@
       }
     ],
 
-    traffic:
-     [
-      {
-        alert: 'sentinel_traffic_%s' % [slo.zone],
-        labels: { 
-            priority: '1', 
-            notify: 'chat-sentinel-poc escalate-sentinel-production' 
-        },
-        annotations: {
-            summary: ' Drop in Traffic for {{ $labels.zone_name }}',
-        },
-        expr: |||
-          (avg_over_time(sql_sentinel_l7ddos_1m{zone_name="%(zone)s",col="requests"}[3m]) / (sql_sentinel_l7ddos_1m{zone_name="%(zone)s",col="requests"})) > %(threshold).2f
-        ||| % {
-          threshold: slo.threshold,
-          zone: slo.zone,
-        },
-      }
-    ],
-
     errorburn:
       [
         {

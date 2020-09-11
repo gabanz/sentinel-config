@@ -9,7 +9,6 @@ class Form extends LitElement {
             zone: {type: String},
             originrtt: {type: Number},
             ttfb: {type: Number},
-            threshold: {type: Number},
             loading: {type: Boolean},
         };
     }
@@ -96,7 +95,6 @@ class Form extends LitElement {
         this.unavailabilityMinutes(this.target);
         this.originrtt = 100;
         this.ttfb = 100;
-        this.threshold = 1.1;
     }
 
     render() {
@@ -164,20 +162,6 @@ class Form extends LitElement {
                  </div>
                  </label>
                  </div>
-                 <div class="field">
-                   <label class="label" for="threshold">
-                     <h3>Threshold</h3>
-                     <div class="control">
-                         <input class="input" type="number" min="0" step="0.1" id="threshold"
-                             placeholder="1.1"
-                             autofocus
-                             .value="${this.threshold}"
-                             @change="${(event) => this.threshold = parseFloat(event.target.value)}"
-                             ?disabled=${this.loading}
-                         />
-                     </div>
-                   </label>
-                 </div>
                 <div class="field">
                     <label class="label">
                         <div class="control">
@@ -228,8 +212,7 @@ class Form extends LitElement {
             availability: this.target,
             zone: this.zone,
             originrtt: this.originrtt,
-            ttfb: this.ttfb,
-            threshold: this.threshold,
+            ttfb: this.ttfb
         };
         console.log(detail);
 

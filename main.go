@@ -61,11 +61,10 @@ local params = %s;
 
 {
   local alerts = slo.alerts(params),
-  rules: alerts.errorburn +
+  _DELETE_THIS_LINE: alerts.errorburn +
   alerts.latency_originrtt +
   alerts.latency_ttfb +
-  alerts.attack +
-  alerts.traffic,
+  alerts.attack
 }
 `
 
@@ -74,7 +73,6 @@ type request struct {
 	Zone      string `json:"zone" validate:"required,zone"`
 	OriginRtt      int            `json:"originrtt" validate:"required,gte=0"`
 	Ttfb      int            `json:"ttfb" validate:"required,gte=0"`
-	Threshold      float64            `json:"threshold" validate:"required,gte=0"`
 }
 
 type params struct {
@@ -83,7 +81,6 @@ type params struct {
 	Zone      string `json:"zone"`
 	OriginRtt      int            `json:"originrtt"`
 	Ttfb      int            `json:"ttfb"`
-	Threshold      float64            `json:"threshold"`
 }
 
 func generate(vm *jsonnet.VM) HandlerFunc {
@@ -112,7 +109,6 @@ func generate(vm *jsonnet.VM) HandlerFunc {
 			Zone:    req.Zone,
 			OriginRtt:       req.OriginRtt,
 			Ttfb:    req.Ttfb,
-			Threshold:       req.Threshold,
 		}
 
 		bytes, err := json.Marshal(p)
